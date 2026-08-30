@@ -1,0 +1,250 @@
+TEST RUN OUTPUT
+===============================
+
+Command executed:
+mvnw.cmd clean test
+
+Result:
+Tests run: 6, Failures: 0, Errors: 0, Skipped: 0
+
+BUILD SUCCESS
+
+
+TOUCAN PAYMENTS - TRANSACTION SERVICE
+INPUT / OUTPUT TEST RECORD
+===============================
+
+1. CREATE TRANSACTION - SUCCESS
+--------------------------------
+Request:
+POST /api/transactions
+
+Input:
+{
+  "transactionId": "TXN100",
+  "customerId": "CUST100",
+  "amount": 100.00,
+  "currency": "INR",
+  "transactionType": "PAYMENT",
+  "transactionStatus": "PENDING"
+}
+
+Result:
+201 Created
+
+Expected:
+Transaction is created successfully.
+
+
+2. CREATE TRANSACTION - INVALID AMOUNT
+---------------------------------------
+Request:
+POST /api/transactions
+
+Input:
+{
+  "transactionId": "TXN101",
+  "customerId": "CUST100",
+  "amount": 0,
+  "currency": "INR",
+  "transactionType": "PAYMENT",
+  "transactionStatus": "PENDING"
+}
+
+Validation:
+Amount must be greater than zero.
+
+Result:
+400 Bad Request
+
+Response:
+{
+  "error": "Amount must be greater than zero"
+}
+
+
+3. CREATE TRANSACTION - DUPLICATE ID
+------------------------------------
+Request:
+POST /api/transactions
+
+Input:
+Transaction ID: TXN100
+(assuming TXN100 already exists)
+
+Validation:
+Transaction ID must be unique.
+
+Result:
+400 Bad Request
+
+Response:
+{
+  "error": "Transaction ID already exists: TXN100"
+}
+
+
+4. GET TRANSACTION - SUCCESS
+----------------------------
+Request:
+GET /api/transactions/TXN100
+
+Input:
+Transaction ID: TXN100
+
+Result:
+200 OK
+
+Expected:
+The transaction with ID TXN100 is returned.
+
+
+5. GET TRANSACTION - NOT FOUND
+------------------------------
+Request:
+GET /api/transactions/DOESNOTEXIST
+
+Input:
+Transaction ID: DOESNOTEXIST
+
+Result:
+404 Not Found
+
+Response:
+{
+  "error": "Transaction not found: DOESNOTEXIST"
+}
+
+
+6. UPDATE TRANSACTION STATUS - SUCCESS
+--------------------------------------
+Request:
+PATCH /api/transactions/TXN100/status?status=COMPLETED
+
+Input:
+Transaction ID: TXN100
+Current status: PENDING
+New status: COMPLETED
+
+Validation:
+Only PENDING transactions can be updated.
+
+Result:
+200 OK
+
+Expected:
+Transaction status is changed to COMPLETED.
+
+
+7. UPDATE TRANSACTION STATUS - INVALID STATUS
+----------------------------------------------
+Request:
+PATCH /api/transactions/TXN100/status?status=INVALID
+
+Input:
+Transaction ID: TXN100
+Current status: PENDING
+New status: INVALID
+
+Validation:
+New status must be COMPLETED or FAILED.
+
+Result:
+400 Bad Request
+
+Response:
+{
+  "error": "Status must be COMPLETED or FAILED"
+}
+
+
+8. UPDATE TRANSACTION STATUS - NON-PENDING TRANSACTION
+-------------------------------------------------------
+Request:
+PATCH /api/transactions/TXN100/status?status=FAILED
+
+Input:
+Transaction ID: TXN100
+Current status: COMPLETED
+New status: FAILED
+
+Validation:
+Only PENDING transactions can be updated.
+
+Result:
+400 Bad Request
+
+Response:
+{
+  "error": "Only PENDING transactions can be updated"
+}
+
+
+9. GET CUSTOMER TRANSACTIONS - SUCCESS
+--------------------------------------
+Request:
+GET /api/transactions/customer/CUST100
+
+Input:
+Customer ID: CUST100
+
+Result:
+200 OK
+
+Expected:
+All transactions belonging to CUST100 are returned.
+
+
+10. GET CUSTOMER TRANSACTIONS - NO MATCHING RECORDS
+----------------------------------------------------
+Request:
+GET /api/transactions/customer/CUST999
+
+Input:
+Customer ID: CUST999
+
+Condition:
+No transactions exist for CUST999.
+
+Result:
+200 OK
+
+Expected:
+An empty list is returned.
+
+
+VALIDATION SUMMARY
+===============================
+
+CREATE:
+- Transaction object is required.
+- Transaction ID is required.
+- Customer ID is required.
+- Amount is required and must be greater than zero.
+- Currency is required.
+- Transaction type is required.
+- Transaction ID must be unique.
+- Transaction status supplied during create is overwritten with PENDING.
+
+GET BY TRANSACTION ID:
+- Transaction ID is required.
+- Transaction must exist.
+
+UPDATE STATUS:
+- Transaction must exist.
+- Current status must be PENDING.
+- New status must be exactly COMPLETED or FAILED.
+- Invalid, empty, blank, or null new status is rejected.
+
+GET BY CUSTOMER ID:
+- Customer ID is required.
+- If no transactions match, an empty list is returned.
+
+HTTP STATUS SUMMARY:
+- Successful CREATE: 201 Created
+- Successful GET: 200 OK
+- Successful UPDATE: 200 OK
+- Validation/business error: 400 Bad Request
+- Transaction not found: 404 Not Found
+
+END OF TEST RUN OUTPUT

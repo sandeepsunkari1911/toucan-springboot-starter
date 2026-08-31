@@ -234,7 +234,7 @@ UPDATE STATUS:
 - Transaction must exist.
 - Current status must be PENDING.
 - New status must be exactly COMPLETED or FAILED.
-- Invalid, empty, blank, or null new status is rejected.
+- - Invalid new status is rejected; the service accepts only COMPLETED or FAILED.
 
 GET BY CUSTOMER ID:
 - Customer ID is required.

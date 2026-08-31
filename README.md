@@ -6,7 +6,7 @@ This project implements the Customer Transactions exercise using Java and Spring
 
 The project can be built and tested using the Maven wrapper.
 
-### Run Tests
+## Run Tests
 
 **Linux / macOS**
 
@@ -25,6 +25,19 @@ mvnw.cmd clean test
 ```powershell
 .\mvnw.cmd clean test
 ```
+
+Expected result:
+
+```text
+Tests run: 6
+Failures: 0
+Errors: 0
+Skipped: 0
+
+BUILD SUCCESS
+```
+
+
 
 ## Technologies Used
 
@@ -304,7 +317,7 @@ Both successful operations and important validation/error scenarios were tested 
 - Transaction IDs uniquely identify transactions.
 - Transaction amounts must be greater than zero.
 - A transaction must exist before it can be retrieved or updated.
-- Only PENDING transactions can move to COMPLETED.
+- Only PENDING transactions can be updated, and the new status must be COMPLETED or FAILED.
 - A COMPLETED transaction is treated as final for the status-update operation.
 - H2 is sufficient for the scope of this exercise.
 

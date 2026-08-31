@@ -6,12 +6,25 @@ This project implements the Customer Transactions exercise using Java and Spring
 
 The project can be built and tested using the Maven wrapper.
 
-### Linux / macOS
+### Run Tests
+
+**Linux / macOS**
 
 ```bash
 ./mvnw clean test
-###  windows
+```
+
+**Windows**
+
+```cmd
 mvnw.cmd clean test
+```
+
+**Windows PowerShell / VS Code**
+
+```powershell
+.\mvnw.cmd clean test
+```
 
 ## Technologies Used
 
